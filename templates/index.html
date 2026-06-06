@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepoVision AI</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="pageLoader" class="page-loader">
+    <div class="premium-loader">
+        <div class="loader-logo">
+            <i class="fa-brands fa-github"></i>
+        </div>
+
+        <div class="ai-rings">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <h2>RepoVision AI</h2>
+
+        <div id="loaderText" class="loader-text">
+            Initializing AI Engine...
+        </div>
+
+        <div class="loader-progress">
+            <div id="loaderBar"></div>
+        </div>
+
+        <div id="loaderPercent" class="loader-percent">
+            0%
+        </div>
+    </div>
+</div>
+
+<div class="app-shell" id="dashboardCapture">
+
+    <aside class="sidebar">
+        <div class="brand-box">
+            <div class="brand-logo">
+                <i class="fa-brands fa-github"></i>
+            </div>
+
+            <div>
+                <h2>RepoVision AI</h2>
+                <p>GitHub Project Reviewer</p>
+            </div>
+        </div>
+
+        <button class="side-link active" data-scroll="dashboard">
+            <i class="fa-solid fa-table-columns"></i>
+            <span>Dashboard</span>
+        </button>
+
+        <button class="side-link" data-scroll="repository">
+            <i class="fa-solid fa-user-astronaut"></i>
+            <span>Repository Profile</span>
+        </button>
+
+        <button class="side-link" data-scroll="technology">
+            <i class="fa-solid fa-microchip"></i>
+            <span>Technologies</span>
+        </button>
+
+        <button class="side-link" data-scroll="readme-preview">
+            <i class="fa-solid fa-book-open"></i>
+            <span>README Preview</span>
+        </button>
+
+        <button class="side-link" data-scroll="contributors">
+            <i class="fa-solid fa-users"></i>
+            <span>Contributors</span>
+        </button>
+
+        <button class="side-link" data-scroll="readiness">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>AI Readiness</span>
+        </button>
+
+        <button class="side-link" data-scroll="charts">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Charts</span>
+        </button>
+
+        <button class="side-link" data-scroll="metrics">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>GitHub Metrics</span>
+        </button>
+
+        <button class="side-link" data-scroll="ai-summary">
+            <i class="fa-solid fa-brain"></i>
+            <span>AI Summary</span>
+        </button>
+
+        <button class="side-link" data-scroll="issues">
+            <i class="fa-solid fa-bug"></i>
+            <span>Issues</span>
+        </button>
+
+        <button class="side-link" data-scroll="recommendations">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>Recommendations</span>
+        </button>
+
+        <div class="nav-title">TOOLS</div>
+
+        <button class="side-link" data-modal="historyModal">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Review History</span>
+        </button>
+
+        <button class="side-link" data-modal="exportModal">
+            <i class="fa-solid fa-file-export"></i>
+            <span>Export Report</span>
+        </button>
+
+        <button class="side-link" data-modal="settingsModal">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </button>
+
+        <div class="upgrade-card">
+            <div class="upgrade-icon">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+
+            <h3>Smart AI Insights</h3>
+            <p>Review repository quality, security, documentation and GitHub activity.</p>
+
+            <button data-modal="upgradeModal">
+                Learn More
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>AI GitHub Project Reviewer</h1>
+                <p>Modern repository analysis dashboard with real GitHub data and AI insights.</p>
+            </div>
+
+            <div class="top-actions">
+                <button class="round-btn" id="themeToggle" type="button">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
+
+                <button class="primary-btn" id="downloadScreenshotBtn" type="button">
+                    <i class="fa-solid fa-camera"></i>
+                    Export Image
+                </button>
+
+                <a class="primary-btn" href="{{ url_for('new_review') }}">
+                    <i class="fa-solid fa-plus"></i>
+                    New Review
+                </a>
+            </div>
+        </header>
+
+        <section class="hero-panel animated-section zoom-target" id="dashboard">
+            <div class="hero-left">
+                <span class="section-badge">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    AI Repository Scanner
+                </span>
+
+                <h2>Analyze a GitHub Repository</h2>
+
+                <p>
+                    Paste a public GitHub repository URL and get instant scores, technologies,
+                    contributors, risk analysis, README preview, owner profile and AI recommendations.
+                </p>
+            </div>
+
+            <div class="hero-form-card">
+                <form method="POST" class="repo-form">
+                    <label>GitHub Repository URL</label>
+
+                    <div class="input-row">
+                        <i class="fa-brands fa-github"></i>
+
+                        <input
+                            type="text"
+                            name="repo_url"
+                            placeholder="https://github.com/username/repository"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" id="analyzeBtn">
+                        <span>Analyze Repository</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                {% if error %}
+                <div class="error-box">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    {{ error }}
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="score-grid animated-section" id="scores">
+
+            <div class="score-card glass-card" data-modal="overallModal">
+                <div class="score-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+
+                <span>Overall Score</span>
+                <h3 class="count-number" data-target="{{ scores.overall if scores else 0 }}">0</h3>
+                <p>{{ "Analyzed" if scores else "Waiting for scan" }}</p>
+            </div>
+
+            <div class="score-card glass-card" data-modal="codeModal">
+                <div class="score-icon">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+
+                <span>Code Quality</span>
+                <h3 class="count-number" data-target="{{ scores.code_quality if scores else 0 }}">0</h3>
+                <p>{{ "Code reviewed" if scores else "No data yet" }}</p>
+            </div>
+
+            <div class="score-card glass-card" data-modal="securityModal">
+                <div class="score-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <span>Security</span>
+                <h3 class="count-number" data-target="{{ scores.security if scores else 0 }}">0</h3>
+                <p>{{ "Risk checked" if scores else "No data yet" }}</p>
+            </div>
+
+            <div class="score-card glass-card" data-modal="docsModal">
+                <div class="score-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+
+                <span>Documentation</span>
+                <h3 class="count-number" data-target="{{ scores.documentation if scores else 0 }}">0</h3>
+                <p>{{ "Docs checked" if scores else "No data yet" }}</p>
+            </div>
+
+            <div class="score-card glass-card" data-modal="healthModal">
+                <div class="score-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <span>Project Health</span>
+                <h3 class="count-number" data-target="{{ scores.health if scores else 0 }}">0</h3>
+                <p>{{ "Health checked" if scores else "No data yet" }}</p>
+            </div>
+
+        </section>
+
+        <section class="repo-dashboard-grid animated-section">
+
+            <div class="panel repo-profile-panel zoom-target" id="repository">
+                <div class="panel-head">
+                    <div>
+                        <h3>Repository Profile</h3>
+                        <p>Owner profile, repository identity and GitHub details</p>
+                    </div>
+
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+
+                <div class="repo-profile-premium">
+                    <img
+                        src="{{ repo.avatar_url if repo else 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png' }}"
+                        alt="GitHub profile"
+                    >
+
+                    <div class="repo-user-info">
+                        <div class="repo-header-row">
+                            <h4>{{ repo.owner if repo else "GitHub User" }}</h4>
+
+                            <span class="verified-badge">
+                                <i class="fa-solid fa-circle-check"></i>
+                                GitHub Profile
+                            </span>
+                        </div>
+
+                        <p>{{ repo.full_name if repo else "No Repository Selected" }}</p>
+
+                        <div class="repo-stats-mini">
+                            <span>
+                                <i class="fa-solid fa-star"></i>
+                                {{ repo.stars if repo else 0 }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-code-fork"></i>
+                                {{ repo.forks if repo else 0 }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-users"></i>
+                                {{ repo.contributors if repo else 0 }}
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-user-plus"></i>
+                                {{ repo.owner_profile.followers if repo else 0 }} followers
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-user-check"></i>
+                                {{ repo.owner_profile.following if repo else 0 }} following
+                            </span>
+
+                            <span>
+                                <i class="fa-solid fa-folder-open"></i>
+                                {{ repo.owner_profile.public_repos if repo else 0 }} repos
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if repo %}
+                    <a href="{{ repo.html_url }}" target="_blank" class="repo-open-btn">
+                        <i class="fa-brands fa-github"></i>
+                        Open Repository
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="repo-description-box">
+                    <h4>Repository Description</h4>
+                    <p>{{ repo.description if repo else "0" }}</p>
+
+                    <div class="repo-meta-grid">
+                        <div>
+                            <i class="fa-solid fa-code"></i>
+                            <span>Language</span>
+                            <b>{{ repo.language if repo else 0 }}</b>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-code-branch"></i>
+                            <span>Default Branch</span>
+                            <b>{{ repo.default_branch if repo else 0 }}</b>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-scale-balanced"></i>
+                            <span>License</span>
+                            <b>{{ repo.license if repo else 0 }}</b>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>Location</span>
+                            <b>{{ repo.owner_profile.location if repo else 0 }}</b>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-circle-info"></i>
+                            <span>Bio</span>
+                            <b>{{ repo.owner_profile.bio if repo else 0 }}</b>
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-database"></i>
+                            <span>Size</span>
+                            <b>{{ repo.size if repo else 0 }} KB</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel zoom-target" id="timeline">
+                <div class="panel-head">
+                    <div>
+                        <h3>Repository Timeline</h3>
+                        <p>Important activity and repository lifecycle details</p>
+                    </div>
+
+                    <i class="fa-solid fa-timeline"></i>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Repository Created</h4>
+                            <p>{{ repo.created_at if repo else "0" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Last Updated</h4>
+                            <p>{{ repo.updated_at if repo else "0" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Last Commit</h4>
+                            <p>{{ repo.last_commit if repo else "0" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Default Branch</h4>
+                            <p>{{ repo.default_branch if repo else "0" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Open Pull Requests</h4>
+                            <p>{{ repo.open_pull_requests if repo else 0 }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Releases</h4>
+                            <p>{{ repo.releases if repo else 0 }}</p>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+
+                        <div>
+                            <h4>Open Issues</h4>
+                            <p>{{ repo.open_issues if repo else 0 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="feature-grid animated-section">
+
+            <div class="panel zoom-target" id="technology">
+                <div class="panel-head">
+                    <div>
+                        <h3>Technology Detection</h3>
+                        <p>Detected stack from repository files</p>
+                    </div>
+
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+
+                <div class="tech-list">
+                    {% if technologies %}
+                        {% for tech in technologies %}
+                        <span class="tech-badge">
+                            <i class="fa-solid fa-bolt"></i>
+                            {{ tech }}
+                        </span>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-row">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No technologies detected yet.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel zoom-target" id="readiness">
+                <div class="panel-head">
+                    <div>
+                        <h3>AI Readiness Score</h3>
+                        <p>Deployment and production readiness signal</p>
+                    </div>
+
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+
+                <div class="readiness-card">
+                    <div class="readiness-circle" style="--ready: {{ ai_readiness.score if ai_readiness else 0 }}%;">
+                        <span class="count-number" data-target="{{ ai_readiness.score if ai_readiness else 0 }}">0</span>
+                        <small>%</small>
+                    </div>
+
+                    <div>
+                        <h4>{{ ai_readiness.level if ai_readiness else "Waiting" }}</h4>
+
+                        <div class="readiness-checks">
+                            {% if ai_readiness %}
+                                {% for check in ai_readiness.checks %}
+                                <p>
+                                    <i class="fa-solid fa-check"></i>
+                                    {{ check }}
+                                </p>
+                                {% endfor %}
+                            {% else %}
+                            <p>
+                                <i class="fa-solid fa-circle-info"></i>
+                                Analyze a repository first.
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel zoom-target">
+                <div class="panel-head">
+                    <div>
+                        <h3>Circular Premium Gauge</h3>
+                        <p>Overall repository quality indicator</p>
+                    </div>
+
+                    <i class="fa-solid fa-circle-notch"></i>
+                </div>
+
+                <div class="premium-gauge" style="--gauge: {{ scores.overall if scores else 0 }}%;">
+                    <div class="gauge-inner">
+                        <span class="count-number" data-target="{{ scores.overall if scores else 0 }}">0</span>
+                        <small>%</small>
+                    </div>
+                </div>
+
+                <div class="gauge-label">
+                    <h4>Repository Quality</h4>
+                    <p>{{ "Analyzed by RepoVision AI" if scores else "Waiting for scan" }}</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="panel animated-section zoom-target" id="readme-preview">
+            <div class="panel-head">
+                <div>
+                    <h3>Repository README Preview</h3>
+                    <p>First lines from README.md file</p>
+                </div>
+
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+
+            <pre class="readme-preview-box">{{ repo.readme_preview if repo else "0" }}</pre>
+        </section>
+
+        <section class="feature-grid animated-section">
+
+            <div class="panel zoom-target">
+                <div class="panel-head">
+                    <div>
+                        <h3>Risk Analysis</h3>
+                        <p>Repository risk based on detected issues</p>
+                    </div>
+
+                    <i class="fa-solid fa-shield-virus"></i>
+                </div>
+
+                <div class="risk-card {{ risk_analysis.color if risk_analysis else 'low' }}">
+                    <h4>{{ risk_analysis.level if risk_analysis else "No Risk Data" }}</h4>
+
+                    {% if risk_analysis %}
+                        {% for point in risk_analysis.points %}
+                        <p>
+                            <i class="fa-solid fa-shield-halved"></i>
+                            {{ point }}
+                        </p>
+                        {% endfor %}
+                    {% else %}
+                    <p>
+                        <i class="fa-solid fa-circle-info"></i>
+                        Analyze a repository first.
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel zoom-target">
+                <div class="panel-head">
+                    <div>
+                        <h3>Export Dashboard</h3>
+                        <p>Download current dashboard as image</p>
+                    </div>
+
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+
+                <div class="export-image-card">
+                    <i class="fa-solid fa-image"></i>
+
+                    <h4>Dashboard Screenshot</h4>
+
+                    <p>Create a PNG image for LinkedIn or portfolio showcase.</p>
+
+                    <button id="downloadScreenshotBtn2" type="button">
+                        <i class="fa-solid fa-download"></i>
+                        Download Image
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel zoom-target" id="metrics">
+                <div class="panel-head">
+                    <div>
+                        <h3>GitHub Metrics</h3>
+                        <p>Real repository activity and community signals</p>
+                    </div>
+
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+
+                <div class="compact-metrics">
+                    <div>
+                        <i class="fa-solid fa-star"></i>
+                        <span>Stars</span>
+                        <b>{{ repo.stars if repo else 0 }}</b>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-code-fork"></i>
+                        <span>Forks</span>
+                        <b>{{ repo.forks if repo else 0 }}</b>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Watchers</span>
+                        <b>{{ repo.watchers if repo else 0 }}</b>
+                    </div>
+
+                    <div>
+                        <i class="fa-solid fa-tag"></i>
+                        <span>Releases</span>
+                        <b>{{ repo.releases if repo else 0 }}</b>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+<br>
+        <section class="panel animated-section zoom-target" id="contributors">
+            <div class="panel-head">
+                <div>
+                    <h3>Top Contributors</h3>
+                    <p>Most active contributors from GitHub</p>
+                </div>
+
+                <i class="fa-solid fa-users"></i>
+            </div>
+
+            <div class="contributors-grid">
+                {% if repo and repo.contributors_list %}
+                    {% for person in repo.contributors_list %}
+                    <a class="contributor-card" href="{{ person.html_url }}" target="_blank">
+                        <img src="{{ person.avatar_url }}" alt="{{ person.username }}">
+
+                        <h4>{{ person.username }}</h4>
+                        <p>{{ person.contributions }} contributions</p>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-row">
+                    <i class="fa-solid fa-circle-info"></i>
+                    No contributors loaded yet.
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="chart-super-grid animated-section zoom-target" id="charts">
+
+            <div class="panel chart-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>Score Radar</h3>
+                        <p>Overall, code, security, documentation and health</p>
+                    </div>
+
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div class="chart-box chart-box-large">
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+
+            <div class="panel chart-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>File Distribution</h3>
+                        <p>Detected file types from repository root</p>
+                    </div>
+
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+
+                <div class="chart-box chart-box-large">
+                    <canvas id="fileChart"></canvas>
+                </div>
+            </div>
+
+            <div class="panel chart-panel">
+                <div class="panel-head">
+                    <div>
+                        <h3>Repository Activity</h3>
+                        <p>Commits, issues and pull requests</p>
+                    </div>
+
+                    <i class="fa-solid fa-chart-column"></i>
+                </div>
+
+                <div class="chart-box chart-box-large">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="panel animated-section zoom-target" id="ai-summary">
+            <div class="panel-head">
+                <div>
+                    <h3>AI Summary</h3>
+                    <p>Smart project overview generated from repository signals</p>
+                </div>
+
+                <i class="fa-solid fa-brain"></i>
+            </div>
+
+            {% if ai_summary %}
+            <div class="empty-state">
+                <i class="fa-solid fa-brain"></i>
+
+                <h4>Project Summary</h4>
+                <p>{{ ai_summary.summary }}</p>
+            </div>
+
+            <div class="bottom-grid">
+                <div>
+                    <div class="panel-head">
+                        <div>
+                            <h3>Strengths</h3>
+                            <p>Positive project signals</p>
+                        </div>
+
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+
+                    <div class="recommendation-list">
+                        {% for item in ai_summary.strengths %}
+                        <div class="recommendation-item">
+                            <i class="fa-solid fa-check"></i>
+                            {{ item }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel-head">
+                        <div>
+                            <h3>Weaknesses</h3>
+                            <p>Areas that need improvement</p>
+                        </div>
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+
+                    <div class="issue-list">
+                        {% for item in ai_summary.weaknesses %}
+                        <div class="issue-item medium">
+                            <span>
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                {{ item }}
+                            </span>
+
+                            <b>Review</b>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-row">
+                <i class="fa-solid fa-circle-info"></i>
+                No AI summary yet. Analyze a repository first.
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="bottom-grid animated-section">
+
+            <div class="panel zoom-target" id="issues">
+                <div class="panel-head">
+                    <div>
+                        <h3>Issues Found</h3>
+                        <p>Detected problems and warnings</p>
+                    </div>
+
+                    <i class="fa-solid fa-bug"></i>
+                </div>
+
+                <div class="issue-list">
+                    {% if issues %}
+                        {% for issue in issues %}
+                        <div class="issue-item {{ issue[2] }}">
+                            <span>
+                                {% if issue[2] == "high" %}
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                {% elif issue[2] == "medium" %}
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-circle-info"></i>
+                                {% endif %}
+
+                                {{ issue[0] }}
+                            </span>
+
+                            <b>{{ issue[1] }}</b>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-row">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No issues yet. Analyze a repository first.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel zoom-target" id="recommendations">
+                <div class="panel-head">
+                    <div>
+                        <h3>AI Recommendations</h3>
+                        <p>Improvement ideas for your repository</p>
+                    </div>
+
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+
+                <div class="recommendation-list">
+                    {% if recommendations %}
+                        {% for rec in recommendations %}
+                        <div class="recommendation-item">
+                            <i class="fa-solid fa-check"></i>
+                            {{ rec }}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-row">
+                        <i class="fa-solid fa-circle-info"></i>
+                        No recommendations yet. Analyze a repository first.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </section>
+
+        <section class="panel structure-panel animated-section zoom-target">
+            <div class="panel-head">
+                <div>
+                    <h3>File Structure Preview</h3>
+                    <p>Top detected files from repository root</p>
+                </div>
+
+                <i class="fa-solid fa-folder-tree"></i>
+            </div>
+
+            <div class="file-grid">
+                {% if repo and repo.files %}
+                    {% for file in repo.files[:12] %}
+                    <div class="file-card">
+                        <i class="fa-regular fa-file-code"></i>
+                        <span>{{ file }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="file-card empty">
+                    <i class="fa-regular fa-file"></i>
+                    <span>0</span>
+                </div>
+
+                <div class="file-card empty">
+                    <i class="fa-regular fa-file"></i>
+                    <span>0</span>
+                </div>
+
+                <div class="file-card empty">
+                    <i class="fa-regular fa-file"></i>
+                    <span>0</span>
+                </div>
+
+                <div class="file-card empty">
+                    <i class="fa-regular fa-file"></i>
+                    <span>0</span>
+                </div>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop"></div>
+
+<div class="popup-modal big-modal score-modal" id="overallModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-score-header">
+        <div class="modal-score-icon">
+            <i class="fa-solid fa-star"></i>
+        </div>
+
+        <div>
+            <h3>Overall Score</h3>
+            <p>Complete repository quality summary.</p>
+        </div>
+    </div>
+
+    <div class="modal-score-grid">
+        <div>
+            <span>Score</span>
+            <b>{{ scores.overall if scores else 0 }}/100</b>
+        </div>
+
+        <div>
+            <span>Status</span>
+            <b>{{ "Very Good" if scores and scores.overall >= 80 else "Good" if scores and scores.overall >= 60 else "Needs Review" }}</b>
+        </div>
+    </div>
+
+    <div class="modal-note">
+        <i class="fa-solid fa-circle-info"></i>
+        This score combines code quality, security, documentation and project health.
+    </div>
+</div>
+
+<div class="popup-modal big-modal score-modal" id="codeModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-score-header">
+        <div class="modal-score-icon">
+            <i class="fa-solid fa-code"></i>
+        </div>
+
+        <div>
+            <h3>Code Quality</h3>
+            <p>Structure, dependency files and repository organization.</p>
+        </div>
+    </div>
+
+    <div class="modal-score-grid">
+        <div>
+            <span>Score</span>
+            <b>{{ scores.code_quality if scores else 0 }}/100</b>
+        </div>
+
+        <div>
+            <span>Signal</span>
+            <b>Project Structure</b>
+        </div>
+    </div>
+
+    <div class="modal-note">
+        <i class="fa-solid fa-check"></i>
+        Add tests, dependency files and clean folder structure to improve this score.
+    </div>
+</div>
+
+<div class="popup-modal big-modal score-modal" id="securityModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-score-header">
+        <div class="modal-score-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <div>
+            <h3>Security Review</h3>
+            <p>Basic security signals and secret-handling readiness.</p>
+        </div>
+    </div>
+
+    <div class="modal-score-grid">
+        <div>
+            <span>Score</span>
+            <b>{{ scores.security if scores else 0 }}/100</b>
+        </div>
+
+        <div>
+            <span>Risk</span>
+            <b>{{ risk_analysis.level if risk_analysis else "No Data" }}</b>
+        </div>
+    </div>
+
+    <div class="modal-note">
+        <i class="fa-solid fa-shield-halved"></i>
+        Use environment variables and avoid committing secrets or local config files.
+    </div>
+</div>
+
+<div class="popup-modal big-modal score-modal" id="docsModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-score-header">
+        <div class="modal-score-icon">
+            <i class="fa-solid fa-file-lines"></i>
+        </div>
+
+        <div>
+            <h3>Documentation Review</h3>
+            <p>README, description and license quality signals.</p>
+        </div>
+    </div>
+
+    <div class="modal-score-grid">
+        <div>
+            <span>Score</span>
+            <b>{{ scores.documentation if scores else 0 }}/100</b>
+        </div>
+
+        <div>
+            <span>README</span>
+            <b>{{ "Detected" if repo and repo.readme_preview != "README preview is not available." else "Missing" }}</b>
+        </div>
+    </div>
+
+    <div class="modal-note">
+        <i class="fa-solid fa-book-open"></i>
+        A strong README should include setup, usage, screenshots, examples and contribution steps.
+    </div>
+</div>
+
+<div class="popup-modal big-modal score-modal" id="healthModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="modal-score-header">
+        <div class="modal-score-icon">
+            <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+
+        <div>
+            <h3>Project Health</h3>
+            <p>Community and maintenance signals from GitHub.</p>
+        </div>
+    </div>
+
+    <div class="modal-score-grid">
+        <div>
+            <span>Score</span>
+            <b>{{ scores.health if scores else 0 }}/100</b>
+        </div>
+
+        <div>
+            <span>Activity</span>
+            <b>{{ repo.open_issues if repo else 0 }} Issues</b>
+        </div>
+    </div>
+
+    <div class="modal-note">
+        <i class="fa-solid fa-chart-line"></i>
+        Releases, contributors and low open issues improve project health.
+    </div>
+</div>
+
+<div class="popup-modal big-modal" id="historyModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Review History</h3>
+    <p>Your latest scanned repositories from SQLite database.</p>
+
+    <div class="history-list">
+        {% if recent_reviews %}
+            {% for review in recent_reviews %}
+            <div class="history-item">
+                <div>
+                    <h4>{{ review[0] }}</h4>
+                    <p>{{ review[2] }} • ⭐ {{ review[3] }} • Forks {{ review[4] }} • Score {{ review[5] }}/100</p>
+                </div>
+
+                <a href="{{ review[1] }}" target="_blank">Open</a>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-row">
+            <i class="fa-solid fa-circle-info"></i>
+            No review history yet.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="popup-modal big-modal" id="exportModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Export Report</h3>
+    <p>Download the latest generated report in JSON or PDF format.</p>
+
+    <div class="export-actions">
+        {% if latest_json_report %}
+        <a href="{{ url_for('download_json', filename=latest_json_report) }}" class="download-btn">
+            <i class="fa-solid fa-file-code"></i>
+            Download JSON
+        </a>
+        {% endif %}
+
+        {% if latest_pdf_report %}
+        <a href="{{ url_for('download_pdf', filename=latest_pdf_report) }}" class="download-btn">
+            <i class="fa-solid fa-file-pdf"></i>
+            Download PDF
+        </a>
+        {% endif %}
+
+        {% if not latest_json_report and not latest_pdf_report %}
+        <div class="empty-row">
+            <i class="fa-solid fa-circle-info"></i>
+            Analyze a repository first.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="popup-modal big-modal" id="settingsModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Dashboard Settings</h3>
+    <p>These settings work in browser localStorage.</p>
+
+    <div class="setting-row">
+        <span>Dark Mode</span>
+        <button id="settingsThemeBtn" class="modal-action">
+            Toggle Theme
+        </button>
+    </div>
+
+    <div class="setting-row">
+        <span>Accent Color</span>
+        <b>#00bc91</b>
+    </div>
+
+    <div class="setting-row">
+        <span>GitHub Token</span>
+        <b>{% if token_available %}Detected{% else %}Not detected{% endif %}</b>
+    </div>
+</div>
+
+<div class="popup-modal big-modal" id="upgradeModal">
+    <button class="close-modal">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <h3>Smart AI Insights</h3>
+    <p>Portfolio feature area for AI summary, PDF export and private repository scanning.</p>
+</div>
+
+<script id="dashboard-data" type="application/json">
+{
+    "overall": {{ scores.overall if scores else 0 }},
+    "code_quality": {{ scores.code_quality if scores else 0 }},
+    "security": {{ scores.security if scores else 0 }},
+    "documentation": {{ scores.documentation if scores else 0 }},
+    "health": {{ scores.health if scores else 0 }}
+}
+</script>
+
+<script id="file-data" type="application/json">
+{
+    "labels": {{ file_labels|tojson if file_labels else ["No Data"]|tojson }},
+    "values": {{ file_values|tojson if file_values else [0]|tojson }}
+}
+</script>
+
+<script id="activity-data" type="application/json">
+{
+    "labels": {{ activity_data["labels"]|tojson if activity_data else ["Commits", "Issues", "Pull Requests"]|tojson }},
+    "values": {{ activity_data["values"]|tojson if activity_data else [0, 0, 0]|tojson }}
+}
+</script>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
