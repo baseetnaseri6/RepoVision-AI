@@ -10,7 +10,7 @@ Modern repository analytics, AI insights, security evaluation, code quality scor
 
 <img src="screenshots/light-mode.png" width="100%" />
 
-<br>
+<br><br><br>
 
 ![Django](https://img.shields.io/badge/Django-Backend-green)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
