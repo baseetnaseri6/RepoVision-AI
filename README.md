@@ -183,7 +183,7 @@ RepoVisionAI
 
 ### Mohammad Baseet Naseri
 
-GitHub: https://github.com/basieetnaseri6
+GitHub: https://github.com/baseetnaseri6
 
 ---
 
