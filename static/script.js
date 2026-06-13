@@ -1,7 +1,3 @@
-/* ==========================
-   Helpers
-========================== */
-
 function readJsonScript(id, fallback) {
     const element = document.getElementById(id);
 
